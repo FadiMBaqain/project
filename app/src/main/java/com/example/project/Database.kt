@@ -1,3 +1,5 @@
+package com.example.project
+
 import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
@@ -15,47 +17,45 @@ data class User(
 class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     companion object {
+        private const val DATABASE_NAME = "UserDatabase"
         private const val DATABASE_VERSION = 1
-        private const val DATABASE_NAME = "UserDatabase.db"
-        private const val TABLE_NAME = "users"
+        private const val TABLE_USERS = "Users"
         private const val COLUMN_ID = "id"
+        private const val COLUMN_USER_ID = "userId"
         private const val COLUMN_PASSWORD = "password"
         private const val COLUMN_AVG = "avg"
         private const val COLUMN_HOURS = "hours"
-        private const val COLUMN_COURSE_PRICE = "course_price"
+        private const val COLUMN_COURSE_PRICE = "coursePrice"
     }
 
 
     override fun onCreate(db: SQLiteDatabase) {
-        val createTableQuery = "CREATE TABLE $TABLE_NAME " +
-                "($COLUMN_ID INTEGER PRIMARY KEY, " +
-                "$COLUMN_PASSWORD TEXT, " +
-                "$COLUMN_AVG REAL, " +
-                "$COLUMN_HOURS INTEGER, " +
-                "$COLUMN_COURSE_PRICE REAL)"
+        val createTableQuery = "CREATE TABLE $TABLE_USERS ($COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT, $COLUMN_USER_ID INTEGER, $COLUMN_PASSWORD TEXT, $COLUMN_AVG REAL, $COLUMN_HOURS INTEGER, $COLUMN_COURSE_PRICE REAL);"
         db.execSQL(createTableQuery)
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        db.execSQL("DROP TABLE IF EXISTS $TABLE_NAME")
+        val dropTableQuery = "DROP TABLE IF EXISTS $TABLE_USERS;"
+        db.execSQL(dropTableQuery)
         onCreate(db)
     }
 
-    fun insertUser(userId: Int, password: String, avg: Double, hours: Int, coursePrice: Double): Long {
-        val values = ContentValues().apply {
-            put(COLUMN_ID, userId)
-            put(COLUMN_PASSWORD, password)
-            put(COLUMN_AVG, avg)
-            put(COLUMN_HOURS, hours)
-            put(COLUMN_COURSE_PRICE, coursePrice)
-        }
-
+    fun insertUser(userId: String, password: String, avg: Double, hours: Double, coursePrice: Double): Boolean {
         val db = writableDatabase
-        val rowId = db.insert(TABLE_NAME, null, values)
+        val values = ContentValues()
+        values.put(COLUMN_USER_ID, userId)
+        values.put(COLUMN_PASSWORD, password)
+        values.put(COLUMN_AVG, avg)
+        values.put(COLUMN_HOURS, hours)
+        values.put(COLUMN_COURSE_PRICE, coursePrice)
+
+        val rowId = db.insert(TABLE_USERS, null, values)
         db.close()
 
-        return rowId
+        return rowId != -1L
     }
+
+
 
 
     @SuppressLint("Range")
@@ -63,14 +63,16 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
         val db = this.readableDatabase
         val cursor = db.query(
-            TABLE_NAME,
+            TABLE_USERS, // Updated table name
             arrayOf(COLUMN_ID, COLUMN_PASSWORD, COLUMN_AVG, COLUMN_HOURS, COLUMN_COURSE_PRICE),
-            "$COLUMN_ID = ?",
+            "$COLUMN_USER_ID = ?",
             arrayOf(userId.toString()),
             null,
             null,
             null
         )
+
+
 
         var user: User? = null
 
@@ -88,4 +90,5 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
         return user
     }
+
 }

@@ -1,13 +1,13 @@
 package com.example.project
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import androidx.fragment.app.Fragment
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -28,14 +28,6 @@ class MoneyFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_money, container, false)
-
-
-
-        return view
-    }
-
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         priceTextView = view.findViewById(R.id.priceTextView)
         calculateButton = view.findViewById(R.id.Calculate)
 
@@ -43,6 +35,7 @@ class MoneyFragment : Fragment() {
             calculateTotalPay()
         }
 
+        return view
     }
 
     private fun calculateTotalPay() {

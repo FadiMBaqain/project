@@ -1,6 +1,6 @@
 package com.example.project
 
-import DatabaseHelper
+import Admin
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,22 +16,15 @@ class LoginFragment : Fragment() {
     private lateinit var passwordEditText: EditText
     private lateinit var idEditText: EditText
     private lateinit var loginButton: Button
-    private lateinit var editTextNumber: EditText
-    private lateinit var editTextNumber2: EditText
     private lateinit var imageView2: ImageView
 
-    private var avg by Delegates.notNull<Double>()
-    private var hours by Delegates.notNull<Int>()
+    private var avg: Double by Delegates.notNull()
+    private var hours: Int by Delegates.notNull()
 
     override fun onCreateView(
-
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
-
-
-
         val dbHelper = DatabaseHelper(requireContext())
         val usersData = listOf(
             mapOf(
@@ -54,45 +47,62 @@ class LoginFragment : Fragment() {
                 "avg" to 90.0,
                 "hours" to 25,
                 "coursePrice" to 14.99
-            )
+            ),
         )
-        for (userData in usersData) {
-            val userId = userData["userId"] as Int
-            val password = userData["password"] as String
-            avg = userData["avg"] as Double  // Remove the "val" keyword here
-            hours = userData["hours"] as Int  // Remove the "val" keyword here
-            val coursePrice = userData["coursePrice"] as Double
-            dbHelper.insertUser(userId, password, avg, hours, coursePrice)
-        }
 
         val view = inflater.inflate(R.layout.fragment_login, container, false)
 
         passwordEditText = view.findViewById(R.id.editTextTextPassword)
         idEditText = view.findViewById(R.id.editTextNumberDecimal)
         loginButton = view.findViewById(R.id.button)
+        imageView2 = view.findViewById(R.id.imageView2)
 
         loginButton.setOnClickListener {
-            val pic = view.findViewById<ImageView>(R.id.imageView2)
-
             val password = passwordEditText.text.toString()
             val id = idEditText.text.toString()
 
             if (password.isNotEmpty() && id.isNotEmpty()) {
-                if (isValidPassword(password) && isValidId(id)) {
-                    passwordEditText.text.clear()
-                    idEditText.text.clear()
+                try {
+                    if (password == "Admin1" && id == "20200100") {
+                        passwordEditText.text.clear()
+                        idEditText.text.clear()
 
-                    val fragment = GpaFragment.newInstance(avg.toString(), hours.toString())
-                    val transaction = requireActivity().supportFragmentManager.beginTransaction()
-                    transaction.replace(R.id.fragmentContainer, fragment)
-                    transaction.commit()
+                        val transaction = requireActivity().supportFragmentManager.beginTransaction()
 
-                    passwordEditText.visibility = View.GONE
-                    idEditText.visibility = View.GONE
-                    loginButton.visibility = View.GONE
-                    pic.visibility = View.GONE
-                } else {
-                    showToast("Invalid password or ID")
+                        val adminFragment = Admin()
+                        transaction.replace(R.id.fragmentContainer, adminFragment)
+                        transaction.commit()
+
+                        passwordEditText.visibility = View.GONE
+                        idEditText.visibility = View.GONE
+                        loginButton.visibility = View.GONE
+                        imageView2.visibility = View.GONE
+                    } else {
+                        val userData = usersData.find { it["userId"].toString() == id && it["password"] == password }
+
+                        if (userData != null) {
+                            passwordEditText.text.clear()
+                            idEditText.text.clear()
+
+                            val transaction = requireActivity().supportFragmentManager.beginTransaction()
+
+                            val avg = userData["avg"].toString()
+                            val hours = userData["hours"].toString()
+
+                            val gpaFragment = GpaFragment.newInstance(avg, hours)
+                            transaction.replace(R.id.fragmentContainer, gpaFragment)
+                            transaction.commit()
+
+                            passwordEditText.visibility = View.GONE
+                            idEditText.visibility = View.GONE
+                            loginButton.visibility = View.GONE
+                            imageView2.visibility = View.GONE
+                        } else {
+                            showToast("Invalid password or ID")
+                        }
+                    }
+                } catch (e: Exception) {
+                    showToast("Something went wrong. Please try again.")
                 }
             }
         }
@@ -103,35 +113,13 @@ class LoginFragment : Fragment() {
 
     private fun isValidPassword(password: String): Boolean {
         return password.length >= 2
-
     }
 
     private fun isValidId(id: String): Boolean {
-
         return id.matches("[0-9]+".toRegex())
     }
-
-    private fun navigateToGpaFragment() {
-        val pic = view?.findViewById<ImageView>(R.id.imageView2)
-
-        val fragment = GpaFragment()
-        val transaction = requireActivity().supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.fragmentContainer, fragment)
-        transaction.commit()
-
-        // Hide the login views after navigation
-        imageView2.visibility= View.GONE
-        passwordEditText.visibility = View.GONE
-        idEditText.visibility = View.GONE
-        if (pic != null) {
-            pic.visibility = View.GONE
-        }
-    }
-
 
     private fun showToast(message: String) {
         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
-
-
 }

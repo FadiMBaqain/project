@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <FrameLayout
+        android:id="@+id/fragmentContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true" />
+
+    <Button
+        android:id="@+id/save_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/price_edittext"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="0dp"
+        android:text="Save" />
+
+    <EditText
+        android:id="@+id/price_edittext"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/avg_edittext"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="0dp"
+        android:hint="Price"
+        android:inputType="numberDecimal" />
+
+    <EditText
+        android:id="@+id/avg_edittext"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/avg_hours_edittext"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="0dp"
+        android:hint="Average"
+        android:inputType="numberDecimal" />
+
+    <EditText
+        android:id="@+id/avg_hours_edittext"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/password_edittext"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="0dp"
+        android:hint="Average Hours"
+        android:inputType="number" />
+
+    <EditText
+        android:id="@+id/password_edittext"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/userid_edittext"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="0dp"
+        android:hint="Password"
+        android:inputType="textPassword" />
+
+    <EditText
+        android:id="@+id/userid_edittext"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/fragmentContainer"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="116dp"
+        android:hint="User ID"
+        android:inputType="text" />
+
+</RelativeLayout>

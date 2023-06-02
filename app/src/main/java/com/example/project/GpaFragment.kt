@@ -36,6 +36,7 @@ class GpaFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_gpa, container, false)
         avgEditText = view.findViewById(R.id.editTextNumber)
         hoursAvgEditText = view.findViewById(R.id.editTextNumber2)
+
         val arguments = arguments
         if (arguments != null) {
             val avgValue = arguments.getString(ARG_PARAM1)
@@ -45,7 +46,7 @@ class GpaFragment : Fragment() {
             hoursAvgEditText.setText(hoursValue)
         }
 
-return view
+        return view
     }
 
 
